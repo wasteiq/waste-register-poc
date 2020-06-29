@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "strict": true,
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "lib": ["es2017", "dom"],
+        "target": "es5",
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "experimentalDecorators": true,
+        "rootDir": "server",
+        "outDir": "server_build"
+    },
+    "exclude": [ 
+        "src"
+    ]
+}
