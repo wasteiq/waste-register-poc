@@ -1,3 +1,6 @@
+# waste-register-poc
+How to build a QR-code /schema for registering waste into a container / storage in WasteIQ.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
