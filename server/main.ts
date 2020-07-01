@@ -13,7 +13,7 @@ export default () => {
 	app.use(bodyParser.urlencoded({limit: bodyParserLimit, extended: true, parameterLimit: 50000}));
 
 
-	app.get('/', function (req, res) {
+	app.get('/*', function (req, res) {
 		res.sendFile(join(__dirname, '../build', 'index.html'));
 	});
 
