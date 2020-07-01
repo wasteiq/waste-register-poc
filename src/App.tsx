@@ -13,33 +13,34 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-
         <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/read-qr">Scan QR</Link>
-            </li>
-          </ul>
-        </nav>
+          <div>
+            <nav>
+              <ul>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to="/read-qr">Scan QR</Link>
+                </li>
+              </ul>
+            </nav>
 
-        <Switch>
-          <Route path="/read-qr">
-            <ReadQr />
-          </Route>
-          <Route path="/">
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+            <Switch>
+              <Route path="/read-qr">
+                <ReadQr />
+              </Route>
+              <Route path="/">
+                <div>
+                  <img src={logo} className="App-logo" alt="logo" />
+                  <p>
+                    Edit <code>src/App.tsx</code> and save to reload.
+                  </p>
+                </div>
+              </Route>
+            </Switch>
+          </div>
+        </Router>
       </header>
     </div>
   );
