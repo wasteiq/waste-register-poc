@@ -4,7 +4,15 @@ import {Subject} from 'rxjs'
 import {map, merge} from 'rxjs/operators/index'
 import { Some, Maybe } from 'monet';
 
-export const createQrReader = (onResults: (timeout: number, data?: any, polygon?: {x: number, y: number}[]) => void) =>
+export interface IResult {
+	timeout: number,
+	data: {customer: string, fraction: string}
+	polygon: {x: number, y: number}[]
+}
+
+type IResultOptions = IResult | false
+
+export const createQrReader = (onResults: (result: IResultOptions) => void) =>
 	Some(new Subject<ImageData>())
 	.map(subject$ => ({
 		subject$,
@@ -31,12 +39,15 @@ export const createQrReader = (onResults: (timeout: number, data?: any, polygon?
 	}))
 	.map(({parses$, readerInterface}) => {
 		const subscription = parses$.subscribe(hitMaybe => 
-			hitMaybe.map(({code} : {code: QRCode}) => (onResults(3, code.data, [
-				code.location.topLeftCorner,
-				code.location.topRightCorner,
-				code.location.bottomRightCorner,
-				code.location.bottomLeftCorner,
-			]), true)).catchMap(() => (onResults(-1), Maybe.Some(true)))
+			hitMaybe.map(({code, customer, fraction}) => (onResults({
+				timeout: 3,
+				data: {customer, fraction},
+				polygon: [
+					code.location.topLeftCorner,
+					code.location.topRightCorner,
+					code.location.bottomRightCorner,
+					code.location.bottomLeftCorner,
+				]}), true)).catchMap(() => (onResults(false), Maybe.Some(true)))
 		)
 		return {
 			...readerInterface,
