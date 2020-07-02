@@ -28,7 +28,7 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 		dataState,
 		...rest,
 	})).map(({videoRef, canvasRef, imageRefs, mockStatePair: [mockState], qrReader, ...rest}) => ({
-		nothing: React.useEffect(() => {
+		registerMediaStreamAndAnimSeq: React.useEffect(() => {
 			if (videoRef.current == null || canvasRef.current == null) {
 				throw new Error("This handling is here because of strict mode, the variable defs below as well")
 			}
@@ -63,6 +63,7 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 		  
 			return () => animRequest && cancelAnimationFrame(animRequest) || undefined;
 		  }, []),
+		unsubscribe: React.useEffect(() => () => qrReader.unsubscribe(), []),
 		...rest,
 		videoRef,
 		canvasRef,
@@ -78,4 +79,5 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 					Note: Assumes 640x480 is same aspect as video stream, if this assumption fails, the result will be stretched */ }
 				<canvas ref={canvasRef} width={`${640}px`} height={`${480}px`} />
 				<span>Reader, state: {state}, timeout: {dataState.timeout}</span>
+				{dataState.data && <span>Data: {dataState.data || "[NONE]"}</span>}
 			</div>).some()
