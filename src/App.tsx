@@ -3,13 +3,19 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+//  useLocation
 } from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
 import { ReadQr } from './ReadQr';
 
+/* function useQuery() {
+  return new URLSearchParams(useLocation().search);
+} */
+
 function App() {
+  // const query = useQuery()
   return (
     <div className="App">
       <header className="App-header">
@@ -27,8 +33,11 @@ function App() {
             </nav>
 
             <Switch>
-              <Route path="/read-qr">
-                <ReadQr />
+              <Route path="/read-qr/:useMockImage/">
+                <ReadQr useMockImage={true} />
+              </Route>
+              <Route path="/read-qr/">
+                <ReadQr useMockImage={false} />
               </Route>
               <Route path="/">
                 <div>
