@@ -1,7 +1,7 @@
 import jsQr from 'jsqr'
 import {QRCode} from 'jsqr'
 import {Subject} from 'rxjs'
-import {map} from 'rxjs/operators/index'
+import {map, merge} from 'rxjs/operators/index'
 import { Some, Maybe } from 'monet';
 
 export const createQrReader = (onResults: (timeout: number, data?: any, polygon?: {x: number, y: number}[]) => void) =>
@@ -12,9 +12,16 @@ export const createQrReader = (onResults: (timeout: number, data?: any, polygon?
 			map(imageData => Maybe.fromFalsy(jsQr(imageData.data, imageData.width, imageData.height, {
 					inversionAttempts: "dontInvert",
 				}))
-				.map(code => ({status: "HIT", code})) //<{status: "HIT", code: QRCode} | {status: "NO_HIT"}>
+				.map(code => ({code, regex: /https:\/\/.*qrident\/([^\/]+)\/([^\/]+)/.exec(code.data)}))
+				.flatMap(({code, regex}) => Maybe.fromFalsy(regex)
+					.map(regex => ({code, regex}))) // filter does not work due to typing of regex
+				.map(({code, regex}) => ({
+					status: "HIT",
+					code,
+					customer: regex[1],
+					fraction: regex[2]}))
 			))
-			// .catchMap(() => Some({status: "NO_HIT"})))))
+//			merge(x))
 	}))
 	.map(({subject$, parses$}) => ({
 		readerInterface: {
