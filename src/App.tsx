@@ -4,18 +4,19 @@ import {
   Switch,
   Route,
   Link,
-//  useLocation
+  useParams,
 } from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
 import { ReadQr } from './ReadQr';
+import { ReadConfirm } from './ReadConfirm';
 
-/* function useQuery() {
-  return new URLSearchParams(useLocation().search);
-} */
+const ReadConfirmWithParams = () => {
+  const params = useParams<{customerId: string, fractionId: string, wasteRoomLabel: string}>()
+  return <ReadConfirm {...params} />
+}
 
 function App() {
-  // const query = useQuery()
   return (
     <div className="App">
       <header className="App-header">
@@ -35,6 +36,9 @@ function App() {
             <Switch>
               <Route path="/read-qr/:useMockImage/">
                 <ReadQr useMockImage={true} />
+              </Route>
+              <Route path="/confirm/:customerId/:fractionId/:wasteRoomLabel/">
+                <ReadConfirmWithParams />
               </Route>
               <Route path="/read-qr/">
                 <ReadQr useMockImage={false} />
