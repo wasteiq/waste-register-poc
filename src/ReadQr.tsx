@@ -100,6 +100,6 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 				{ /* Insane error here: used style (CSS) width/height, instead of plain w/h.  This led to some crazy scaling that was impossible to understand.  Look up "300x150" for an explanation. 
 					Note: Assumes 640x480 is same aspect as video stream, if this assumption fails, the result will be stretched */ }
 				<canvas ref={canvasRef} width={`${640}px`} height={`${480}px`} />
-				<span>Reader, state: {state}, timeout: {dataState && dataState.timeout || -1}</span>
+				<span>Reader, state: {state}, timeout: {dataState && dataState.timeout}</span>
 				{dataState && <span>Customer: {dataState.data.customer}, Fraction: {dataState.data.fraction}</span>}
 			</div>).some()
