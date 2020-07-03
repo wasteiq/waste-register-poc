@@ -3,6 +3,13 @@ How to build a QR-code /schema for registering waste into a container / storage 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## TODOs
+
+- [ ] Serverside component communicating with WIQ
+- [ ] Actual loading of customer / fraction data
+- [ ] Proper handling of users
+- [ ] Proper handling of waste rooms, warning whe fraction is in another room
+
 ## Available Scripts
 
 In the project directory, you can run:
