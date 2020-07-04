@@ -72,7 +72,7 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 				})
 		  
 			return () => (animRequest && cancelAnimationFrame(animRequest)) || undefined;
-		  }),
+		  }, []),
 		unsubscribe: useEffect(() => () => qrReader.unsubscribe()),
 		paintPolygon: useEffect(() => Maybe.fromFalsy((ctx: CanvasRenderingContext2D) => {
 				if (!(rest.dataState && rest.dataState.polygon?.length))
