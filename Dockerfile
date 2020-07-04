@@ -6,7 +6,7 @@ RUN yarn
 COPY tsconfig.json server_tsconfig.json ./
 COPY src ./src
 COPY server ./server
-COPY src/public ./public
+COPY public ./public
 RUN yarn build
 RUN yarn run build:server
 
