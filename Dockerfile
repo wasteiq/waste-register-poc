@@ -8,7 +8,7 @@ RUN yarn build
 RUN yarn run build:server
 
 # Stage 2 - the production environment
-FROM node:12.16.1-alpine AS deps
+FROM node:12.16.1-alpine
 WORKDIR code
 COPY package.json yarn.lock index.js ./
 RUN yarn install --production
