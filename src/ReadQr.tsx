@@ -7,7 +7,8 @@ import { EventEmitter } from "events";
 
 type ICanvasState = {width: number, height: number}
 
-/* eslint-disable */
+/* Disable rules of hooks as effects is placed in monads.  exhaustive deps as useEffect is made to run only once with the empty dep list */
+/* eslint-disable react-hooks/rules-of-hooks, react-hooks/exhaustive-deps */
 
 const mediaReady = (mediaElm: HTMLVideoElement | HTMLImageElement) =>
 	"readyState" in mediaElm ?
@@ -15,7 +16,7 @@ const mediaReady = (mediaElm: HTMLVideoElement | HTMLImageElement) =>
 		mediaElm.complete && mediaElm.naturalWidth > 0
 
 const renderImages = (refs: React.RefObject<HTMLImageElement>[], imgs: string[]) =>
-	imgs.map((src, i) => <img src={src} ref={refs[i]} key={i} style={{display: "none"}} />)
+	imgs.map((src, i) => <img src={src} ref={refs[i]} key={i} style={{display: "none"}} alt={""} />)
 
 const polygonPath = (polygon: {x: number, y: number}[]) =>
 	"M" + [...polygon, polygon[0]].map(({x, y}) => `${x},${y} `).join()
@@ -29,11 +30,11 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 		imageRefs: [useRef<HTMLImageElement>(null), useRef<HTMLImageElement>(null)],
 		canvasEvents: useMemo(() => new EventEmitter(), []),
 	}).map(({dataState: [dataState, setDataState], ...rest}) => ({
-		qrReader: useMemo(() => createQrReader(setDataState), [createQrReader]),
+		qrReader: useMemo(() => createQrReader(setDataState), [setDataState]),
 		dataState,
 		...rest,
 	})).map(({videoRef, canvasRef, imageRefs, mockStatePair: [mockState], qrReader, canvasEvents, ...rest}) => ({
-		registerMediaStreamAndAnimSeq: React.useEffect(() => {
+		registerMediaStreamAndAnimSeq: useEffect(() => {
 			if (videoRef.current == null || canvasRef.current == null) {
 				throw new Error("This handling is here because of strict mode, the variable defs below as well")
 			}
@@ -44,8 +45,8 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 			const animate = () => {
 				const mediaSource = useMockImage ? imageRefs[mockState].current || videoElm : videoElm
 				if (mediaReady(mediaSource)) {
-					Maybe.fromFalsy(canvasElm.getContext("2d")).
-						forEach(ctx => {
+					Maybe.fromFalsy(canvasElm.getContext("2d"))
+						.forEach(ctx => {
 							ctx.drawImage(mediaSource, 0, 0, canvasElm.width, canvasElm.height);
 							qrReader.addFrame(ctx.getImageData(0, 0, canvasElm.width, canvasElm.height))
 							ctx.lineWidth = 3
@@ -70,9 +71,9 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 					rest.stateThings[1]("FAILED")
 				})
 		  
-			return () => animRequest && cancelAnimationFrame(animRequest) || undefined;
-		  }, []),
-		unsubscribe: React.useEffect(() => () => qrReader.unsubscribe(), []),
+			return () => (animRequest && cancelAnimationFrame(animRequest)) || undefined;
+		  }),
+		unsubscribe: useEffect(() => () => qrReader.unsubscribe()),
 		paintPolygon: useEffect(() => Maybe.fromFalsy((ctx: CanvasRenderingContext2D) => {
 				if (!(rest.dataState && rest.dataState.polygon?.length))
 					return
@@ -90,10 +91,10 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 		videoRef,
 		canvasRef,
 		imageRefs
-	})).
-	map(({stateThings: [state], videoRef, imageRefs, canvasRef, dataState}) => 
+	}))
+	.map(({stateThings: [state], videoRef, imageRefs, canvasRef, dataState}) => 
 		state === "FAILED" ?
-			<div style={{color: "orange", margin: "2em"}}>🎥 Unable to access video stream (please make sure you have a webcam enabled)</div> :
+			<div style={{color: "orange", margin: "2em"}}><span role={"img"}>🎥</span> Unable to access video stream (please make sure you have a webcam enabled)</div> :
 			<div style={{display: "flex", flexDirection: "column"}}>
 				<video ref={videoRef} style={{display: "none"}} />
 				{useMockImage && renderImages(imageRefs, [mockImageSuccess, mockImageFailure])}
