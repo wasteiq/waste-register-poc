@@ -3,8 +3,9 @@ FROM node:12.16.1 AS build-deps
 WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN yarn
-COPY tsconfig.json ./
-COPY src server ./
+COPY tsconfig.json server_tsconfig.json ./
+COPY src ./src
+COPY server ./server
 RUN yarn build
 RUN yarn run build:server
 
