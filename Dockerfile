@@ -3,7 +3,7 @@ FROM node:12.16.1 AS build-deps
 WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN yarn
-COPY . ./
+COPY src/ server/ tsconfig.json ./
 RUN yarn build
 RUN yarn run build:server
 
@@ -15,4 +15,5 @@ RUN yarn install --production
 COPY --from=build-deps /usr/src/app/build ./build
 COPY --from=build-deps /usr/src/app/server_build ./server_build
 EXPOSE 3000
+ENV port 3000
 CMD ["node", "index"]
