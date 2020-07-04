@@ -3,7 +3,7 @@ FROM node:12.16.1 AS build-deps
 WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN yarn
-COPY src/ server/ tsconfig.json ./
+COPY tsconfig.json src server  ./
 RUN yarn build
 RUN yarn run build:server
 
