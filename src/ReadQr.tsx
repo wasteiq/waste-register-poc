@@ -1,4 +1,6 @@
 import React, { useState, useRef, useMemo, useEffect } from "react"
+import {useHistory} from 'react-router-dom'
+import * as H from 'history';
 import {Some, Maybe} from "monet"
 import { createQrReader, IResult } from "./qrReading/reader"
 import mockImageSuccess from './mockImages/success.png';
@@ -21,6 +23,15 @@ const renderImages = (refs: React.RefObject<HTMLImageElement>[], imgs: string[])
 const polygonPath = (polygon: {x: number, y: number}[]) =>
 	"M" + [...polygon, polygon[0]].map(({x, y}) => `${x},${y} `).join()
 
+const redirectToConfirm = (history: H.History<H.History.PoorMansUnknown>) => (r: IResult, ) =>
+	history.push(`../confirm/${r.data.customer}/${r.data.fraction}/test_room/`)
+
+const handleSetStateAndTimeoutRedirect = (setDataState: (s: IResult | false) => void, history: H.History<H.History.PoorMansUnknown>) =>
+	(s: IResult | false) => 
+		Maybe.fromFalsy(s || null)
+			.filter(r => r.timeout === 0)
+			.cata(() => setDataState(s), redirectToConfirm(history))
+	
 export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 		stateThings: useState<"INIT" | "WAIT" | "FAILED" | "STREAMING">("INIT"),
 		dataState: useState<IResult | false>(false),
@@ -28,9 +39,11 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 		canvasRef: useRef<HTMLCanvasElement>(null),
 		mockStatePair: useState(Math.floor(Math.random() * 1.99)),
 		imageRefs: [useRef<HTMLImageElement>(null), useRef<HTMLImageElement>(null)],
+		browserHistory: useHistory(),
 		canvasEvents: useMemo(() => new EventEmitter(), []),
-	}).map(({dataState: [dataState, setDataState], ...rest}) => ({
-		qrReader: useMemo(() => createQrReader(setDataState), [setDataState]),
+	}).map(({dataState: [dataState, setDataState], browserHistory, ...rest}) => ({
+		qrReader: useMemo(() => createQrReader(handleSetStateAndTimeoutRedirect(setDataState, browserHistory)), []),
+		redirectToConfirm: redirectToConfirm(browserHistory),
 		dataState,
 		...rest,
 	})).map(({videoRef, canvasRef, imageRefs, mockStatePair: [mockState], qrReader, canvasEvents, ...rest}) => ({
@@ -92,7 +105,7 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 		canvasRef,
 		imageRefs
 	}))
-	.map(({stateThings: [state], videoRef, imageRefs, canvasRef, dataState}) => 
+	.map(({stateThings: [state], videoRef, imageRefs, canvasRef, dataState, redirectToConfirm}) => 
 		state === "FAILED" ?
 			<div style={{color: "orange", margin: "2em"}}><span role={"img"} aria-label="video-issue">🎥</span> Unable to access video stream (please make sure you have a webcam enabled)</div> :
 			<div style={{display: "flex", flexDirection: "column"}}>
@@ -101,6 +114,8 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 				{ /* Insane error here: used style (CSS) width/height, instead of plain w/h.  This led to some crazy scaling that was impossible to understand.  Look up "300x150" for an explanation. 
 					Note: Assumes 640x480 is same aspect as video stream, if this assumption fails, the result will be stretched */ }
 				<canvas ref={canvasRef} width={`${640}px`} height={`${480}px`} />
-				<span>Reader, state: {state}, timeout: {dataState && dataState.timeout}</span>
-				{dataState && <span>Customer: {dataState.data.customer}, Fraction: {dataState.data.fraction}</span>}
+				{dataState && [
+					<span key="s">Customer: {dataState.data.customer}, Fraction: {dataState.data.fraction}</span>,
+					<button key="a" onClick={() => redirectToConfirm(dataState)} style={{margin: "auto"}}>Use ({dataState.timeout}s)</button>
+				]}
 			</div>).some()
