@@ -21,6 +21,8 @@ interface IPrelimResult {
 }
 interface IMatchStats {firstMatch: number, lastMatch: number, match: IPrelimResult | null}
 
+const timeoutSeconds = 5
+
 /* Used as accumulator with scan to keep matches a short while after the algorithm ceases to see the code. This is useful to with a countdown. */
 export const keepLastHitWhenCloseInTime = (timeout: number, rightNow = () => +new Date()) =>
 	(acc: IMatchStats, matchMaybe: Maybe<IPrelimResult>) => matchMaybe
@@ -57,11 +59,10 @@ export const createQrReader = (onResults: (result: IResultOptions) => void) =>
 			),
 			interval(200)
 		]).pipe(
-			map(([a, _t]) => a.firstMatch > 0 ? {...a, timeout: Math.max(0, Math.round((a.firstMatch + 5000 - +new Date()) / 1000))} : {...a, timeout: -1}),
+			map(([a, _t]) => a.firstMatch > 0 ? {...a, timeout: Math.max(0, Math.round((a.firstMatch + timeoutSeconds * 1000 - +new Date()) / 1000))} : {...a, timeout: -1}),
 			scan<IMatchStats & {timeout: number} & {duplicate?: boolean}>((acc, val) => ({...val, duplicate: acc.timeout === val.timeout})),
 			filter(val => !val.duplicate)
 		)
-//			merge(x))
 	}))
 	.map(({subject$, parses$}) => ({
 		readerInterface: {
