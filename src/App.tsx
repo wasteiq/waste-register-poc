@@ -33,28 +33,31 @@ function App() {
               </ul>
             </nav>
 
-            <Switch>
-              <Route path="/read-qr/:useMockImage/">
-                <ReadQr useMockImage={true} />
-              </Route>
-              <Route path="/confirm/:customerId/:fractionId/:wasteRoomLabel/">
-                <ReadConfirmWithParams />
-              </Route>
-              <Route path="/read-qr/">
-                <ReadQr useMockImage={false} />
-              </Route>
-              <Route path="/">
-                <div>
-                  <img src={logo} className="App-logo" alt="logo" />
-                  <p>
-                    Edit <code>src/App.tsx</code> and save to reload.
-                  </p>
-                </div>
-              </Route>
-            </Switch>
+            <div style={{marginTop: "15vh"}}>
+              <Switch>
+                <Route path="/read-qr/:useMockImage/">
+                  <ReadQr useMockImage={true} />
+                </Route>
+                <Route path="/confirm/:customerId/:fractionId/:wasteRoomLabel/">
+                  <ReadConfirmWithParams />
+                </Route>
+                <Route path="/read-qr/">
+                  <ReadQr useMockImage={false} />
+                </Route>
+                <Route path="/">
+                  <div>
+                    <img src={logo} className="App-logo" alt="logo" />
+                    <p>
+                      Click <code>[ Scan QR ]</code> to read QR Codes.
+                    </p>
+                  </div>
+                </Route>
+              </Switch>
+            </div>
           </div>
         </Router>
       </header>
+      <footer />
     </div>
   );
 }

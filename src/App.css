@@ -19,9 +19,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.app-header div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .App-link {
@@ -34,5 +40,21 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+nav ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+nav ul li {
+    display: block;
+}
+
+@media (max-width: 640px) {
+  canvas {
+    transform: scale(0.5);
+    margin-top: -10em;
   }
 }
