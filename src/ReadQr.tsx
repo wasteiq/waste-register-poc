@@ -94,7 +94,7 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 	}))
 	.map(({stateThings: [state], videoRef, imageRefs, canvasRef, dataState}) => 
 		state === "FAILED" ?
-			<div style={{color: "orange", margin: "2em"}}><span role={"img"}>🎥</span> Unable to access video stream (please make sure you have a webcam enabled)</div> :
+			<div style={{color: "orange", margin: "2em"}}><span role={"img"} aria-label="video-issue">🎥</span> Unable to access video stream (please make sure you have a webcam enabled)</div> :
 			<div style={{display: "flex", flexDirection: "column"}}>
 				<video ref={videoRef} style={{display: "none"}} />
 				{useMockImage && renderImages(imageRefs, [mockImageSuccess, mockImageFailure])}
