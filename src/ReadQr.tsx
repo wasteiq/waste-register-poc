@@ -116,6 +116,6 @@ export const ReadQr = ({useMockImage}: {useMockImage: boolean}) => Some({
 				<canvas ref={canvasRef} width={`${640}px`} height={`${480}px`} />
 				{dataState && [
 					<span key="s">Customer: {dataState.data.customer}, Fraction: {dataState.data.fraction}</span>,
-					<button key="a" onClick={() => redirectToConfirm(dataState)} style={{margin: "auto"}}>Use ({dataState.timeout}s)</button>
+					<button key="a" onClick={() => redirectToConfirm(dataState)} style={{margin: "auto", marginTop: "1em"}}>Use ({dataState.timeout}s)</button>
 				]}
 			</div>).some()

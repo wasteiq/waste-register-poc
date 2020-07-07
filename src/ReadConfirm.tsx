@@ -35,4 +35,5 @@ export const ReadConfirm = ({customerId, fractionId, wasteRoomLabel}: IProps) =>
 		<div>{`Customer: ${customerName} (${customerId})`}</div>
 		<div>{`Fraction: ${fractionLabel} (${fractionId})`}</div>
 		<div>{`Waste Room: ${wasteRoomLabel}`}</div>
+		<button key="a" onClick={() => alert("Not implemented")} style={{margin: "auto", marginTop: "1em"}}>Check in waste</button>
 	</div>)
