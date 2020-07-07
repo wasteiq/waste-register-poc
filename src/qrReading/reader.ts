@@ -13,6 +13,9 @@ export interface IResult {
 
 type IResultOptions = IResult | false
 
+const parseRegex = /https:\/\/.*qrident\/([^/]+)\/([^/]+)/
+export const expectedScanUrl = "qrident" // must match the regex above
+
 interface IPrelimResult {
 	code: QRCode
 	customer: string
@@ -45,7 +48,7 @@ export const createQrReader = (onResults: (result: IResultOptions) => void) =>
 				map(imageData => Maybe.fromFalsy(jsQr(imageData.data, imageData.width, imageData.height, {
 						inversionAttempts: "dontInvert",
 					}))
-					.map(code => ({code, regex: /https:\/\/.*qrident\/([^/]+)\/([^/]+)/.exec(code.data)}))
+					.map(code => ({code, regex: parseRegex.exec(code.data)}))
 					.flatMap(({code, regex}) => Maybe.fromFalsy(regex)
 						.map(regex => ({code, regex}))) // filter does not work due to typing of regex
 					.map(({code, regex}) => <IPrelimResult>{
