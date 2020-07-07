@@ -30,6 +30,7 @@
     "start:server": "port=3001 node index",
     "build": "react-scripts build",
     "build:server": "tsc --skipLibCheck --project server_tsconfig.json",
+    "build:docker": "docker build -t wasteiq/waste-register-poc -t wasteiq/waste-register-poc:$(git describe --always --tags --dirty) .",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
