@@ -10,6 +10,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - [ ] Proper handling of users
 - [ ] Proper handling of waste rooms, warning whe fraction is in another room
 
+Bugs / issues
+
+- [ ] Restart count if QR content switches - differnet customer/fraction
+
 ## Available Scripts
 
 In the project directory, you can run:
